@@ -15,7 +15,7 @@ if [ ! -e text8 ]; then
 fi
 DIMENSION=$1
 PARA=$2
-CORPUS=/bigtemp/cj7an/en_wiki_corpus
+CORPUS=text8
 #CORPUS=$2
 VOCAB_FILE=vocab"$1".txt
 COOCCURRENCE_FILE=cooccurrence"$1".bin
@@ -52,7 +52,7 @@ if [[ $? -eq 0 ]]
 #           elif [ "$1" = 'octave' ]; then
 #               octave < ./eval/octave/read_and_evaluate_octave.m 1>&2 
 #           else
-               python2 eval/python/evaluate.py --vocab_file $VOCAB_FILE --vectors_file $SAVE_FILE".txt"
+               # python2 eval/python/evaluate.py --vocab_file $VOCAB_FILE --vectors_file $SAVE_FILE".txt"
 #           fi
 #       fi
     fi
