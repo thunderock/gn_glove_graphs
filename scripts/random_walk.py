@@ -4,6 +4,13 @@
 # @Date:   2023-02-03 11:10:18
 # @Filepath: scripts/random_walk.py
 
+import sys, os
+residual2vec_ = '../../residual2vec_'
+sys.path.insert(0, residual2vec_)
+
+from utils import snakemake_utils
+import getopt
+
 from typing import Optional, Tuple
 
 import torch
@@ -36,30 +43,59 @@ class RandomWalk(object):
         else:
             print("removing old adj matrix!")
         row, col = edge_index
-        self.N = maybe_num_nodes(edge_index)
+        N = maybe_num_nodes(edge_index)
         self.adj = SparseTensor(row=row, col=col, sparse_sizes=(N, N)).to('cpu')
+        self.N = N
         return self
 
     def transform(self, batch_size=64) -> Tensor:
         start = torch.randint(self.N, (batch_size,))
         rowptr, col, _ = self.adj.csr()
-        rw = random_walk(rowptr, col, self.batch, self.walk_length, self.p, self.q)
+        rw = random_walk(rowptr,col, start, self.walk_length, self.p, self.q)
         if not isinstance(rw, Tensor):
             rw = rw[0]
         
-        walks = []
-        num_walks_per_rw = 1 + self.walk_length + 1 - self.context_size
-        for j in range(num_walks_per_rw):
-            walks.append(rw[:, j:j + self.context_size])
-        return torch.cat(walks, dim=0)
+        return rw
     
-    def save(self, path):
-        torch.save(self.adj, path)
+def save_text(path, tensor, format="%d"):
+    assert isinstance(tensor, Tensor)
+    import numpy as np
         
+    np.savetxt(path, tensor.numpy(), fmt='%d')
 
-import sys, os
-residual2vec_ = '../../residual2vec_'
-sys.path.insert(0, residual2vec_)
 
-from utils import snakemake_utils
-dataset = snakemake_utils.get_dataset("polbook")
+# take dataset as an argument here
+
+def main(argv):
+
+    print(argv)
+    try:
+        # take dataset as an argument here
+
+        opts, args = getopt.getopt(argv,"hd:o:n:",["dataset=","output=", "num="])
+        dataset = 'polbook'
+        output = 'polbook.txt'
+        num_sentences = None
+        for opt, arg in opts:
+            print(opt, arg)
+            if opt in ['-d', '--dataset']:
+                dataset = arg
+                print('dataset: ', dataset)
+            if opt in ['-o', '--output']:
+                output = arg
+                print('output: ', output)
+            if opt in ['-n', '--num']:
+                num_sentences = int(arg)
+                print('num_sentences: ', num_sentences)
+    except getopt.GetoptError:
+        print('test.py -d <dataset> -o <output> -n <num_sentences>')
+        sys.exit(2)
+
+    
+    edge_index = snakemake_utils.get_dataset(dataset).edge_index
+    rw = RandomWalk(context_size=10, walk_length=40).fit(edge_index)
+    num_sentences = rw.N * 100 if num_sentences is None else num_sentences
+    save_text(output, rw.transform(num_sentences))
+
+if __name__ == "__main__":
+    main(sys.argv[1:])
