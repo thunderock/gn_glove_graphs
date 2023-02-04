@@ -4,16 +4,16 @@
 # One optional argument can specify the language used for eval script: matlab, octave or [default] python
 
 make
-if [ ! -e text8 ]; then
-  if hash wget 2>/dev/null; then
-    wget http://mattmahoney.net/dc/text8.zip
-  else
-    curl -O http://mattmahoney.net/dc/text8.zip
-  fi
-  unzip text8.zip
-  rm text8.zip
-fi
-DIMENSION=$1
+# if [ ! -e text8 ]; then
+#   if hash wget 2>/dev/null; then
+#     wget http://mattmahoney.net/dc/text8.zip
+#   else
+#     curl -O http://mattmahoney.net/dc/text8.zip
+#   fi
+#   unzip text8.zip
+#   rm text8.zip
+# fi
+DIMENSION=16
 PARA=$2
 CORPUS=text8
 #CORPUS=$2
@@ -24,16 +24,18 @@ BUILDDIR=build
 SAVE_FILE=vectors"$1"-"$2"
 VERBOSE=2
 MEMORY=100.0
-VOCAB_MIN_COUNT=50
-VECTOR_SIZE=$1
+VOCAB_MIN_COUNT=0
+VECTOR_SIZE=16
 MAX_ITER=100
 WINDOW_SIZE=10
 BINARY=2
 NUM_THREADS=8
 X_MAX=100
 VOCAB_HASH_FILE=hashdump"$1".txt
-MALE_WORD_FILE=../wordlist/male_word_file.txt
-FEMALE_WORD_FILE=../wordlist/female_word_file.txt
+MALE_WORD_FILE=../wordlist/male_word_file_new.txt
+FEMALE_WORD_FILE=../wordlist/female_word_file_new.txt
+
+python ../scripts/random_walk.py -n 1000000 -o $CORPUS -d airport -w $FEMALE_WORD_FILE -m $MALE_WORD_FILE
 
 $BUILDDIR/vocab_count -min-count $VOCAB_MIN_COUNT -verbose $VERBOSE < $CORPUS > $VOCAB_FILE
 if [[ $? -eq 0 ]]
