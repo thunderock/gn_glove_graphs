@@ -13,25 +13,25 @@ if [ ! -e text8 ]; then
   unzip text8.zip
   rm text8.zip
 fi
-DIMENSION=$1
-PARA=$2
-CORPUS=/bigtemp/cj7an/en_wiki_corpus
+DIMENSION=100
+PARA=8
+CORPUS=text8
 #CORPUS=$2
-VOCAB_FILE=vocab"$1".txt
-COOCCURRENCE_FILE=cooccurrence"$1".bin
-COOCCURRENCE_SHUF_FILE=cooccurrence"$1".shuf.bin
+VOCAB_FILE=vocab"$DIMENSION".txt
+COOCCURRENCE_FILE=cooccurrence"$DIMENSION".bin
+COOCCURRENCE_SHUF_FILE=cooccurrence"$DIMENSION".shuf.bin
 BUILDDIR=build
-SAVE_FILE=vectors"$1"-"$2"
+SAVE_FILE=vectors"$DIMENSION"-"$PARA"
 VERBOSE=2
 MEMORY=100.0
 VOCAB_MIN_COUNT=50
-VECTOR_SIZE=$1
+VECTOR_SIZE=$DIMENSION
 MAX_ITER=100
 WINDOW_SIZE=10
 BINARY=2
 NUM_THREADS=8
 X_MAX=100
-VOCAB_HASH_FILE=hashdump"$1".txt
+VOCAB_HASH_FILE=hashdump"$DIMENSION".txt
 MALE_WORD_FILE=../wordlist/male_word_file.txt
 FEMALE_WORD_FILE=../wordlist/female_word_file.txt
 
