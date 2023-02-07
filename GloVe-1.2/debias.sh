@@ -13,17 +13,19 @@ make
 #   unzip text8.zip
 #   rm text8.zip
 # fi
+# declare -A arguments
+# arguments=([dim]=16 [para]=8)
 DIMENSION=16
-PARA=$2
+PARA=8
 CORPUS=text8
 #CORPUS=$2
-VOCAB_FILE=vocab"$1".txt
-COOCCURRENCE_FILE=cooccurrence"$1".bin
-COOCCURRENCE_SHUF_FILE=cooccurrence"$1".shuf.bin
+VOCAB_FILE=vocab16.txt
+COOCCURRENCE_FILE=cooccurrence"$DIMENSION".bin
+COOCCURRENCE_SHUF_FILE=cooccurrence"$DIMENSION".shuf.bin
 BUILDDIR=build
-SAVE_FILE=vectors"$1"-"$2"
+SAVE_FILE=vectors"$DIMENTION"-"$PARA"
 VERBOSE=2
-MEMORY=100.0
+MEMORY=500.0
 VOCAB_MIN_COUNT=0
 VECTOR_SIZE=16
 MAX_ITER=100
@@ -31,7 +33,7 @@ WINDOW_SIZE=10
 BINARY=2
 NUM_THREADS=8
 X_MAX=100
-VOCAB_HASH_FILE=hashdump"$1".txt
+VOCAB_HASH_FILE=hashdump"$DIMENTION".txt
 MALE_WORD_FILE=../wordlist/male_word_file_new.txt
 FEMALE_WORD_FILE=../wordlist/female_word_file_new.txt
 
